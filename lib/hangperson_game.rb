@@ -10,6 +10,38 @@ class HangpersonGame
   
   def initialize(word)
     @word = word
+    @guesses = ''
+    @wrong_guesses = ''
+  end
+  
+  attr_accessor :word, :guesses, :wrong_guesses
+  
+  def guess l
+    raise ArgumentError, 'Empty | Nil | Not a letter' unless l =~ /^[a-zA-Z]/
+    l.downcase!
+    if word.include? l and not guesses.include? l
+      guesses << l
+    elsif not word.include? l and not wrong_guesses.include? l
+      wrong_guesses << l
+    else
+      false
+    end
+  end
+  
+  def word_with_guesses
+    w = word
+    w.split('').each do |l|
+      if not guesses.include? l
+        w[word.index l] = '-'
+      end
+    end
+    w
+  end
+  
+  def check_win_or_lose
+    return :win if not word_with_guesses.include? '-'
+    return :lose if wrong_guesses.length >= 7
+    :play
   end
 
   # You can test it by running $ bundle exec irb -I. -r app.rb
